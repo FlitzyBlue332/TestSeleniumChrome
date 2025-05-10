@@ -8,6 +8,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -37,6 +38,7 @@ public class TestChrome {
 
         WebElement lastUnreadEmail = findLastUnreadEmail();
         String lastSubject = getEmailSubject(lastUnreadEmail);
+        Reporter.log("Subject: " + lastSubject);
         System.out.println("Subject: " + lastSubject);
         deleteEmail(lastUnreadEmail);
         verifyEmailDeletion(lastSubject);
@@ -64,7 +66,8 @@ public class TestChrome {
                     By.cssSelector("div[data-challenge='TOTP']")));
             // found otp -> manual input, no other choice
             System.out.println("Manual OTP input required - waiting 30 seconds");
-            Thread.sleep(30000);
+            wait.withTimeout(Duration.ofSeconds(20)).until(ExpectedConditions.invisibilityOfElementLocated(
+                    By.cssSelector("div[data-challenge='TOTP']")));
         } catch (Exception e) {
             // Didn't find any otp prompt -> continue
         }
