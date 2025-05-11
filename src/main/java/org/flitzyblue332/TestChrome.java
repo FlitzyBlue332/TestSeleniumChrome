@@ -61,15 +61,13 @@ public class TestChrome {
         passwordInput.sendKeys(PASSWORD);
         driver.findElement(By.id("passwordNext")).click();
 
-        try {
-            WebElement otpPrompt = wait.withTimeout(Duration.ofSeconds(3)).until(ExpectedConditions.visibilityOfElementLocated(
-                    By.cssSelector("div[data-challenge='TOTP']")));
+        // handle otp
+        List<WebElement> otpElements = driver.findElements(By.cssSelector("div[data-challenge='TOTP']"));
+        if(otpElements.isEmpty()) {
             // found otp -> manual input, no other choice
-            System.out.println("Manual OTP input required - waiting 30 seconds");
-            wait.withTimeout(Duration.ofSeconds(20)).until(ExpectedConditions.invisibilityOfElementLocated(
+            System.out.println("Manual OTP input required - waiting 20 seconds");
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(
                     By.cssSelector("div[data-challenge='TOTP']")));
-        } catch (Exception e) {
-            // Didn't find any otp prompt -> continue
         }
     }
 
