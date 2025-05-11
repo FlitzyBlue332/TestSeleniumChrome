@@ -28,35 +28,22 @@ public class TestChrome {
         options.addArguments("--incognito");
         driver = new ChromeDriver(options);
         wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-        driver.get("https://mail.google.com");
-        handleLogin();
+
     }
 
     @Test
-    public void testGmailDelete(){
+    public void testGmailDeleteCheckTrash(){
+        driver.get("https://mail.google.com");
+        handleLogin();
+
         WebElement lastUnreadEmail = findLastUnreadEmail();
         String lastThreadID = getEmailID(lastUnreadEmail);
         Reporter.log("Subject: " + getEmailSubject(lastUnreadEmail));
         System.out.println("Subject: " + lastThreadID);
         deleteEmail(lastUnreadEmail);
-//        verifyEmailDeletion(lastThreadID);
         navigateToTrash();
         verifyEmailDeletedInTrash(lastThreadID);
     }
-
-    @Test
-    public void testGmailDeleteCheckInbox(){
-        driver.get("https://mail.google.com");
-        WebElement lastUnreadEmail = findLastUnreadEmail();
-        String lastThreadID = getEmailID(lastUnreadEmail);
-        Reporter.log("Subject: " + getEmailSubject(lastUnreadEmail));
-        System.out.println("Subject: " + lastThreadID);
-        deleteEmail(lastUnreadEmail);
-        verifyEmailDeletion(lastThreadID);
-//        navigateToTrash();
-//        verifyEmailDeletedInTrash(lastThreadID);
-    }
-
 
     private void handleLogin(){
         // handle login
@@ -125,9 +112,6 @@ public class TestChrome {
     }
 
     private void verifyEmailDeletedInTrash(String deletedEmailThreadID) {
-//        driver.navigate().refresh();
-//        List<WebElement> allTrashEmails = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(
-//                By.cssSelector("div[role='main'] tr.zA.zE")));
         wait.until(ExpectedConditions.titleContains("Trash"));
         List<WebElement> allTrashEmails = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(
                 By.cssSelector("div[role='main'] tr.zA.zE")));
